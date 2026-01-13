@@ -6,6 +6,10 @@
     {
       "path": "skills/acm-config",
       "enabled": true
+    },
+    {
+      "path": "skills/acm-handoff",
+      "enabled": true
     }
   ]
 }

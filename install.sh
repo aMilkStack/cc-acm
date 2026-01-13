@@ -54,6 +54,39 @@ fi
 chmod +x "$SCRIPTS_DIR/handoff-prompt.sh"
 echo -e "${GREEN}✓${RESET} Script installed"
 
+# Install SessionStart hook
+HOOKS_DIR="$CLAUDE_DIR/hooks"
+SKILLS_DIR="$CLAUDE_DIR/skills"
+mkdir -p "$HOOKS_DIR"
+mkdir -p "$SKILLS_DIR/acm-handoff"
+
+echo -e "${GRAY}→${RESET} Installing SessionStart hook"
+cp "$SCRIPT_DIR/.claude/hooks/session-start-acm.sh" "$HOOKS_DIR/"
+chmod +x "$HOOKS_DIR/session-start-acm.sh"
+
+# Install handoff skill
+cp "$SCRIPT_DIR/skills/acm-handoff/SKILL.md" "$SKILLS_DIR/acm-handoff/"
+
+# Register hook in hooks.json
+HOOKS_JSON="$CLAUDE_DIR/hooks.json"
+if [ -f "$HOOKS_JSON" ]; then
+    # Backup existing hooks.json
+    cp "$HOOKS_JSON" "$HOOKS_JSON.bak"
+    # Check if our hook is already registered
+    if grep -q "session-start-acm.sh" "$HOOKS_JSON"; then
+        echo -e "${GREEN}✓${RESET} Hook already registered"
+    else
+        echo -e "${GRAY}→${RESET} Adding hook to existing hooks.json"
+        # TODO: Properly merge JSON (for now, warn user)
+        echo -e "${PINK}⚠${RESET} You have existing hooks. Please manually add:"
+        echo -e "${GRAY}    ~/.claude/hooks/session-start-acm.sh to your hooks.json${RESET}"
+    fi
+else
+    # Create new hooks.json
+    cp "$SCRIPT_DIR/.claude/hooks.json" "$HOOKS_JSON"
+    echo -e "${GREEN}✓${RESET} Hook registered"
+fi
+
 # Check if statusline needs patching
 if [ -f "$STATUSLINE" ]; then
     if grep -q "handoff-prompt.sh" "$STATUSLINE"; then

@@ -39,6 +39,7 @@ echo ""
 # Confirm uninstall
 echo -e "${PINK}This will remove:${RESET}"
 echo -e "${GRAY}  • Handoff script from ~/.claude/scripts/${RESET}"
+echo -e "${GRAY}  • SessionStart hook and handoff skill${RESET}"
 echo -e "${GRAY}  • Statusline patches${RESET}"
 echo -e "${GRAY}  • Configuration file${RESET}"
 echo -e "${GRAY}  • Temporary flag files${RESET}"
@@ -60,6 +61,29 @@ if [ -f "$SCRIPTS_DIR/handoff-prompt.sh" ]; then
     echo -e "${GREEN}✓${RESET} Script removed"
 else
     echo -e "${GRAY}→${RESET} Handoff script not found (already removed?)"
+fi
+
+# Remove SessionStart hook
+if [ -f "$CLAUDE_DIR/hooks/session-start-acm.sh" ]; then
+    echo -e "${GRAY}→${RESET} Removing SessionStart hook"
+    rm -f "$CLAUDE_DIR/hooks/session-start-acm.sh"
+    echo -e "${GREEN}✓${RESET} Hook removed"
+else
+    echo -e "${GRAY}→${RESET} Hook not found"
+fi
+
+# Remove handoff skill
+if [ -d "$CLAUDE_DIR/skills/acm-handoff" ]; then
+    echo -e "${GRAY}→${RESET} Removing handoff skill"
+    rm -rf "$CLAUDE_DIR/skills/acm-handoff"
+    echo -e "${GREEN}✓${RESET} Skill removed"
+else
+    echo -e "${GRAY}→${RESET} Skill not found"
+fi
+
+# Note about hooks.json
+if [ -f "$CLAUDE_DIR/hooks.json" ] && grep -q "session-start-acm.sh" "$CLAUDE_DIR/hooks.json"; then
+    echo -e "${PINK}⚠${RESET} Please manually remove session-start-acm.sh from ~/.claude/hooks.json"
 fi
 
 # Restore statusline from backup

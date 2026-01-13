@@ -22,10 +22,22 @@ Statusline (every 300ms)
     │
     └─ at 60% → handoff-prompt.sh
                     │
-                    ├─ [Handoff] → claude -p generates summary → new tab opens
-                    ├─ [In 5 min] → snooze, asks again later
-                    └─ [Dismiss] → won't ask again this session
+                    ├─ [YES] → Generate summary → Write to /acm:handoff skill → Open new tab
+                    │          SessionStart hook → "Use /acm:handoff" → Claude loads context
+                    │
+                    ├─ [IN 5 MIN] → Snooze, asks again after configured duration
+                    │
+                    └─ [DISMISS] → Won't ask again this session
 ```
+
+### The Handoff Flow
+
+1. **Context reaches threshold** - Dialog appears when you hit configured % (default 60%)
+2. **Click YES** - Summary is generated using `claude -p` with your auth
+3. **Summary written to skill** - Saved to `~/.claude/skills/acm-handoff/SKILL.md`
+4. **New session opens** - Fresh Claude tab launches automatically
+5. **SessionStart hook runs** - Detects handoff and prompts Claude to use it
+6. **Claude loads context** - Uses `/acm:handoff` skill containing your summary
 
 ## Installation
 
@@ -36,8 +48,11 @@ Statusline (every 300ms)
 
 This will:
 1. Copy scripts to `~/.claude/scripts/`
-2. Update your statusline to trigger at 60%
-3. Back up existing files
+2. Install SessionStart hook to `~/.claude/hooks/`
+3. Install acm-handoff skill to `~/.claude/skills/`
+4. Register the hook in `~/.claude/hooks.json`
+5. Update your statusline to trigger at configured threshold
+6. Back up existing files
 
 ## Manual Installation
 
@@ -45,13 +60,32 @@ This will:
 2. Make executable: `chmod +x ~/.claude/scripts/handoff-prompt.sh`
 3. Add the trigger logic to your statusline (see `statusline-patch.sh`)
 
-## Files
+## Architecture
 
 ```
-scripts/
-├── handoff-prompt.sh   # Main script: dialog + handoff flow
-└── statusline-patch.sh # Patch for ~/.claude/statusline-command.sh
+cc-acm/
+├── scripts/
+│   └── handoff-prompt.sh        # Main script: dialog + handoff generation
+├── .claude/
+│   ├── hooks/
+│   │   └── session-start-acm.sh  # SessionStart hook for auto-loading handoff
+│   └── hooks.json                 # Hook registration config
+├── skills/
+│   ├── acm-config/
+│   │   └── SKILL.md               # Interactive configuration skill
+│   └── acm-handoff/
+│       └── SKILL.md               # Dynamic handoff skill (rewritten each handoff)
+├── install.sh                     # Installer
+└── uninstall.sh                   # Uninstaller
 ```
+
+### Skills
+
+**`/acm:config`** - Interactive configuration
+Guides you through customizing CC-ACM settings with friendly Q&A. Configures threshold, snooze duration, summary length, and dialog style.
+
+**`/acm:handoff`** - Context handoff
+Dynamically written during handoff. Contains the summary from your previous session. SessionStart hook prompts Claude to use this automatically when starting a new session after handoff.
 
 ## Configuration
 
