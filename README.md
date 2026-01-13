@@ -94,8 +94,6 @@ SUMMARY_TOKENS=500     # Max tokens for summary (200-2000)
 
 ## Technical Details
 
-**Dialog**: PowerShell WinForms, borderless with ASCII `░▒▓` borders. Retro palette matching the header pixel art.
-
 **Warp Launch**: Uses SendKeys - focuses Warp, Ctrl+Shift+T for new tab, clipboard paste "claude", Enter. AppActivate ensures correct window even if you click elsewhere.
 
 **Hook**: Checks if `~/.claude/skills/acm-handoff/SKILL.md` exists and contains real content. If so, injects context telling Claude to immediately invoke `/acm:handoff`.
