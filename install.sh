@@ -100,7 +100,7 @@ else
     echo -e "${GREEN}✓${RESET} Hook registered"
 fi
 
-# Install cyberpunk statusline (includes CC-ACM trigger)
+# Install retro statusline (includes CC-ACM trigger)
 if [ -f "$STATUSLINE" ]; then
     echo -e "${GRAY}→${RESET} Backing up existing statusline"
     cp "$STATUSLINE" "$STATUSLINE.bak"
@@ -108,7 +108,7 @@ fi
 echo -e "${GRAY}→${RESET} Installing CC-ACM statusline"
 cp "$SCRIPT_DIR/scripts/statusline-command.sh" "$STATUSLINE"
 chmod +x "$STATUSLINE"
-echo -e "${GREEN}✓${RESET} Cyberpunk statusline installed"
+echo -e "${GREEN}✓${RESET} Retro statusline installed"
 
 echo ""
 echo -e "${GREEN}${BOLD}✓ Installation complete!${RESET}"

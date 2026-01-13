@@ -3,7 +3,7 @@
 # Read JSON input from stdin
 input=$(cat)
 
-# CC-ACM Cyberpunk Statusline
+# CC-ACM retro Statusline
 # Colors from the pixel art palette
 
 # True color (24-bit) - exact palette match
@@ -140,7 +140,7 @@ else
     context_info="${TEAL}◆${msg_count}${RESET}"
 fi
 
-# Format output - cyberpunk style with pixel art palette
+# Format output - retro style with pixel art palette
 # ░▒▓ user@host ▓ dir ▓ model ▓ ████░░░░ 45% ▓▒░
 printf "${DARK_GRAY}░▒${RESET}${ORANGE}▓${RESET} ${PINK}%s${RESET} ${ORANGE}▓${RESET} ${TEAL}%s${RESET} ${ORANGE}▓${RESET} ${MINT}%s${RESET} ${ORANGE}▓${RESET} %b ${ORANGE}▓${RESET}${DARK_GRAY}▒░${RESET}" \
     "$user" "$cwd" "$model" "$context_info"
