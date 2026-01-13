@@ -4,6 +4,8 @@
 
 Automatic context handoff for Claude Code. When your session hits 60% context usage, a dialog prompts you to generate a summary and open a fresh session with full context.
 
+**For authenticated Claude Code CLI users** - Uses your logged-in session via `claude -p` (no API keys, no cost per handoff). This is a productivity tool for Pro/Teams users, not an API wrapper.
+
 ## Features
 
 - **Auto-trigger at 60%** - Statusline monitors context usage
@@ -62,18 +64,20 @@ Edit `handoff-prompt.sh` to customise:
 - WSL with Warp terminal (uses PowerShell for dialogs)
 - Python 3 (for transcript parsing)
 
-## Platform Variants
+## Platform Support
 
-The default version is for WSL + Warp. Experimental versions for other platforms:
+**Primary Platform (Fully Supported):**
+- **WSL + Warp Terminal** - Tested on Windows 11 + WSL2 + Warp
+
+**Other Platforms (In Development):**
 
 | Platform | Dialog | New Tab | Status |
 |----------|--------|---------|--------|
-| **WSL/Warp** (default) | PowerShell/WinForms | Warp keystrokes | Tested |
-| [Linux (Zenity)](platforms/linux-zenity/) | Zenity GTK | gnome-terminal | Experimental |
-| [macOS](platforms/macos/) | osascript | iTerm2/Terminal | Experimental |
-| [Generic](platforms/generic/) | Text prompt | Manual | Experimental |
+| [Linux (Zenity)](platforms/linux-zenity/) | Zenity GTK | gnome-terminal | In Development |
+| [macOS](platforms/macos/) | osascript | iTerm2/Terminal | In Development |
+| [Generic](platforms/generic/) | Text prompt | Manual | In Development |
 
-To use an experimental version, copy the `handoff-prompt.sh` from the relevant `platforms/` folder instead of the default one.
+To try a platform variant, copy the `handoff-prompt.sh` from the relevant `platforms/` folder instead of the default one. Contributions and testing feedback welcome!
 
 ## License
 
