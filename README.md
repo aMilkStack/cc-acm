@@ -1,22 +1,8 @@
-```
- ██████╗██╗      █████╗ ██╗   ██╗██████╗ ██╗██╗  ██╗██╗███╗   ██╗███████╗
-██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██║██║ ██╔╝██║████╗  ██║██╔════╝
-██║     ██║     ███████║██║   ██║██║  ██║██║█████╔╝ ██║██╔██╗ ██║███████╗
-██║     ██║     ██╔══██║██║   ██║██║  ██║██║██╔═██╗ ██║██║╚██╗██║╚════██║
-╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝██║██║  ██╗██║██║ ╚████║███████║
- ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝
-                     █████╗  ██████╗███╗   ███╗
-                    ██╔══██╗██╔════╝████╗ ████║
-                    ███████║██║     ██╔████╔██║
-                    ██╔══██║██║     ██║╚██╔╝██║
-                    ██║  ██║╚██████╗██║ ╚═╝ ██║
-                    ╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝
-            ░▒▓ Automatic Context Manager ▓▒░
-```
+![Claudikins ACM Banner](banner.png)
 
-Automatic context handoff for Claude Code. When context usage hits 60%, a dialog prompts you to generate a summary and continue in a fresh session.
+Automatic context handoff for Claude Code. When context usage hits 60%, Claude asks if you want to generate a summary and continue in a fresh session.
 
-**Requirements**: Claude Code CLI, WSL, Warp terminal, Python 3.
+**Requirements**: Claude Code CLI, Python 3.
 
 ## What It Does
 
