@@ -1,15 +1,15 @@
 ---
 name: acm-config
-description: Interactively configures CC-ACM (Claude Code Automatic Context Manager) settings by asking the user questions about trigger threshold, snooze duration, summary length, and other preferences. Use when the user wants to customize CC-ACM behavior or runs '/acm:config'.
+description: Interactively configures Claudikins Automatic Context Manager settings by asking the user questions about trigger threshold, snooze duration, summary length, and other preferences. Use when the user wants to customize Claudikins Automatic Context Manager behavior or runs '/acm:config'.
 ---
 
-# CC-ACM Interactive Configuration
+# Claudikins Automatic Context Manager Interactive Configuration
 
-You are helping the user configure CC-ACM (Claude Code Automatic Context Manager). This skill guides you through an interactive configuration process where you ask the user questions and save their preferences to `~/.claude/cc-acm.conf`.
+You are helping the user configure Claudikins Automatic Context Manager. This skill guides you through an interactive configuration process where you ask the user questions and save their preferences to `~/.claude/claudikins-acm.conf`.
 
 ## Configuration Flow
 
-Follow this conversational flow to configure CC-ACM:
+Follow this conversational flow to configure Claudikins Automatic Context Manager:
 
 ### 1. Welcome & Current Settings
 
@@ -17,11 +17,11 @@ First, check if a config file exists and show current settings:
 
 ```bash
 # Check for existing config
-if [ -f ~/.claude/cc-acm.conf ]; then
-    echo "Current CC-ACM Configuration:"
-    cat ~/.claude/cc-acm.conf
+if [ -f ~/.claude/claudikins-acm.conf ]; then
+    echo "Current Claudikins Automatic Context Manager Configuration:"
+    cat ~/.claude/claudikins-acm.conf
 else
-    echo "No configuration found. Let's set up CC-ACM!"
+    echo "No configuration found. Let's set up Claudikins Automatic Context Manager!"
 fi
 ```
 
@@ -33,13 +33,13 @@ Ask the user about each setting in a friendly, conversational way:
 - Question: "At what context percentage should the handoff dialog appear?"
 - Default: 60
 - Valid range: 50-90
-- Explain: "This controls when CC-ACM alerts you. Lower = more frequent alerts, higher = fewer alerts but less context headroom."
+- Explain: "This controls when Claudikins alerts you. Lower = more frequent alerts, higher = fewer alerts but less context headroom."
 
 **Snooze Duration:**
 - Question: "How long should the snooze duration be (in minutes)?"
 - Default: 5
 - Valid range: 1-60
-- Explain: "When you click 'IN 5 MIN', how long should CC-ACM wait before asking again?"
+- Explain: "When you click 'SNOOZE', how long should Claudikins wait before asking again?"
 
 **Summary Token Length:**
 - Question: "How detailed should handoff summaries be (in tokens)?"
@@ -65,8 +65,8 @@ For each answer:
 After all questions are answered, create the config file:
 
 ```bash
-cat > ~/.claude/cc-acm.conf << EOF
-# CC-ACM Configuration
+cat > ~/.claude/claudikins-acm.conf << EOF
+# Claudikins Automatic Context Manager Configuration
 # Generated on $(date)
 
 # Context trigger threshold (50-90)
@@ -89,11 +89,11 @@ After saving, offer to reload the configuration:
 
 ```bash
 # Source the new config
-source ~/.claude/cc-acm.conf
-echo "Configuration saved to ~/.claude/cc-acm.conf"
+source ~/.claude/claudikins-acm.conf
+echo "Configuration saved to ~/.claude/claudikins-acm.conf"
 echo ""
 echo "Note: Changes will take effect in new sessions or after running:"
-echo "  source ~/.claude/cc-acm.conf"
+echo "  source ~/.claude/claudikins-acm.conf"
 ```
 
 ### 6. Show Summary
@@ -101,9 +101,9 @@ echo "  source ~/.claude/cc-acm.conf"
 Display a friendly summary of what was configured:
 
 ```
-╔═══════════════════════════════════════╗
-║     CC-ACM Configuration Saved!       ║
-╚═══════════════════════════════════════╝
+╔═══════════════════════════════════════════╗
+║   Claudikins Automatic Context Manager Configuration Saved!     ║
+╚═══════════════════════════════════════════╝
 
 ✓ Trigger threshold: 60%
 ✓ Snooze duration: 5 minutes
@@ -111,7 +111,6 @@ Display a friendly summary of what was configured:
 ✓ Dialog style: vibrant
 
 Your changes will take effect in new sessions.
-Want to test it? Run: ~/.claude/scripts/handoff-prompt.sh
 ```
 
 ## Tone & Style
@@ -119,15 +118,15 @@ Want to test it? Run: ~/.claude/scripts/handoff-prompt.sh
 - Be conversational and friendly
 - Explain technical terms in simple language
 - Show enthusiasm about customization
-- Use the CC-ACM branding colors (orange, pink, cyan) in output
-- No emoji (matches CC-ACM's clean aesthetic)
+- Use the Claudikins branding colors (orange, pink, cyan) in output
+- No emoji (matches Claudikins' clean aesthetic)
 
 ## Example Interaction
 
 ```
 USER: /acm:config
 
-ASSISTANT: Let's configure CC-ACM! I'll ask you a few questions about your preferences.
+ASSISTANT: Let's configure Claudikins Automatic Context Manager! I'll ask you a few questions about your preferences.
 
 Current settings not found. Let's set up fresh!
 
@@ -142,7 +141,7 @@ What would you like? (Press enter for 60%)
 ## Additional Commands
 
 If the user wants to:
-- **View current config**: Show the contents of `~/.claude/cc-acm.conf`
+- **View current config**: Show the contents of `~/.claude/claudikins-acm.conf`
 - **Reset to defaults**: Delete the config file and recreate with defaults
 - **Edit manually**: Open the config file in their editor
 

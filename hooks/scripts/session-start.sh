@@ -1,12 +1,11 @@
 #!/bin/bash
-# CC-ACM SessionStart Hook
+# Claudikins Automatic Context Manager SessionStart Hook
 # Detects if a handoff is available and prompts Claude to use it
 
 # Read hook input from stdin
 INPUT=$(cat)
 
 # Extract session info
-SESSION_ID=$(echo "$INPUT" | grep -o '"session_id":"[^"]*"' | sed 's/.*:"//' | sed 's/"//')
 SOURCE=$(echo "$INPUT" | grep -o '"source":"[^"]*"' | sed 's/.*:"//' | sed 's/"//')
 
 # Only check for handoff on new sessions (not resume/clear/compact)
@@ -14,17 +13,21 @@ if [ "$SOURCE" != "startup" ]; then
     exit 0
 fi
 
-# Check if handoff skill exists and has content
-HANDOFF_SKILL="$HOME/.claude/skills/acm-handoff/SKILL.md"
+# External state location (outside plugin)
+HANDOFF_STATE="$HOME/.claude/claudikins-acm/handoff.md"
 
-if [ ! -f "$HANDOFF_SKILL" ]; then
-    # Skill doesn't exist, no handoff available
+if [ ! -f "$HANDOFF_STATE" ]; then
+    # No handoff available
     exit 0
 fi
 
-# Check if skill contains actual handoff (not placeholder)
-if grep -q "No Active Handoff" "$HANDOFF_SKILL"; then
-    # Placeholder content, no real handoff
+# Check if file has actual content (not empty or placeholder)
+if [ ! -s "$HANDOFF_STATE" ]; then
+    exit 0
+fi
+
+# Check for placeholder content
+if grep -q "No Active Handoff" "$HANDOFF_STATE"; then
     exit 0
 fi
 

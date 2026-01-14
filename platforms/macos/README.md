@@ -1,4 +1,4 @@
-# CC-ACM: macOS Version
+# Claudikins Automatic Context Manager: macOS Version
 
 > **EXPERIMENTAL** - Not fully tested. Contributions welcome!
 

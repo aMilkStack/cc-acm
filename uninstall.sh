@@ -1,12 +1,13 @@
 #!/bin/bash
-# CC-ACM Uninstaller
+# Claudikins Automatic Context Manager Uninstaller
 
 set -e
 
 CLAUDE_DIR="$HOME/.claude"
 SCRIPTS_DIR="$CLAUDE_DIR/scripts"
 STATUSLINE="$CLAUDE_DIR/statusline-command.sh"
-CONFIG_FILE="$CLAUDE_DIR/cc-acm.conf"
+CONFIG_FILE="$CLAUDE_DIR/claudikins-acm.conf"
+STATE_DIR="$CLAUDE_DIR/claudikins-acm"
 
 # Colors for output
 ORANGE='\033[38;5;208m'
@@ -20,20 +21,24 @@ BOLD='\033[1m'
 # ASCII art banner
 echo -e "${ORANGE}${BOLD}"
 cat << "EOF"
-   ╔══════════════════════════════════════════════════════════╗
-   ║                                                          ║
-   ║    ██████╗ ██████╗       █████╗  ██████╗███╗   ███╗     ║
-   ║   ██╔════╝██╔════╝      ██╔══██╗██╔════╝████╗ ████║     ║
-   ║   ██║     ██║     █████╗███████║██║     ██╔████╔██║     ║
-   ║   ██║     ██║     ╚════╝██╔══██║██║     ██║╚██╔╝██║     ║
-   ║   ╚██████╗╚██████╗      ██║  ██║╚██████╗██║ ╚═╝ ██║     ║
-   ║    ╚═════╝ ╚═════╝      ╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝     ║
-   ║                                                          ║
-   ║          Uninstaller                                     ║
-   ╚══════════════════════════════════════════════════════════╝
+   ╔══════════════════════════════════════════════════════════════════╗
+   ║  ██████╗██╗      █████╗ ██╗   ██╗██████╗ ██╗██╗  ██╗██╗███╗   ██╗║
+   ║ ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██║██║ ██╔╝██║████╗  ██║║
+   ║ ██║     ██║     ███████║██║   ██║██║  ██║██║█████╔╝ ██║██╔██╗ ██║║
+   ║ ██║     ██║     ██╔══██║██║   ██║██║  ██║██║██╔═██╗ ██║██║╚██╗██║║
+   ║ ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝██║██║  ██╗██║██║ ╚████║║
+   ║  ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝║
+   ║                    █████╗  ██████╗███╗   ███╗                    ║
+   ║                   ██╔══██╗██╔════╝████╗ ████║                    ║
+   ║                   ███████║██║     ██╔████╔██║                    ║
+   ║                   ██╔══██║██║     ██║╚██╔╝██║                    ║
+   ║                   ██║  ██║╚██████╗██║ ╚═╝ ██║                    ║
+   ║                   ╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝                    ║
+   ║                      ░▒▓ Uninstaller ▓▒░                         ║
+   ╚══════════════════════════════════════════════════════════════════╝
 EOF
 echo -e "${RESET}"
-echo -e "${CYAN}    Removing CC-ACM from Claude Code CLI${RESET}"
+echo -e "${CYAN}    Removing Claudikins Automatic Context Manager from Claude Code CLI${RESET}"
 echo ""
 
 # Confirm uninstall
@@ -42,7 +47,7 @@ echo -e "${GRAY}  • Handoff script from ~/.claude/scripts/${RESET}"
 echo -e "${GRAY}  • SessionStart hook and skills (handoff + config)${RESET}"
 echo -e "${GRAY}  • Warp launch configuration${RESET}"
 echo -e "${GRAY}  • Statusline patches${RESET}"
-echo -e "${GRAY}  • Configuration file${RESET}"
+echo -e "${GRAY}  • Configuration and state files${RESET}"
 echo -e "${GRAY}  • Temporary flag files${RESET}"
 echo ""
 read -p "Continue? (y/N): " -n 1 -r
@@ -91,17 +96,22 @@ else
 fi
 
 # Remove Warp launch configuration
-if [ -f "$HOME/.warp/launch_configurations/cc-acm-handoff.yaml" ]; then
+if [ -f "$HOME/.warp/launch_configurations/claudikins-acm-handoff.yaml" ]; then
     echo -e "${GRAY}→${RESET} Removing Warp launch configuration"
+    rm -f "$HOME/.warp/launch_configurations/claudikins-acm-handoff.yaml"
+    echo -e "${GREEN}✓${RESET} Warp config removed"
+elif [ -f "$HOME/.warp/launch_configurations/cc-acm-handoff.yaml" ]; then
+    # Legacy name
+    echo -e "${GRAY}→${RESET} Removing Warp launch configuration (legacy)"
     rm -f "$HOME/.warp/launch_configurations/cc-acm-handoff.yaml"
     echo -e "${GREEN}✓${RESET} Warp config removed"
 else
     echo -e "${GRAY}→${RESET} Warp config not found"
 fi
 
-# Note about hooks.json
-if [ -f "$CLAUDE_DIR/hooks.json" ] && grep -q "session-start-acm.sh" "$CLAUDE_DIR/hooks.json"; then
-    echo -e "${PINK}⚠${RESET} Please manually remove session-start-acm.sh from ~/.claude/hooks.json"
+# Note about hooks.json / settings.json
+if [ -f "$CLAUDE_DIR/settings.json" ] && grep -q "session-start-acm.sh" "$CLAUDE_DIR/settings.json"; then
+    echo -e "${PINK}⚠${RESET} Please manually remove session-start-acm.sh from ~/.claude/settings.json"
 fi
 
 # Restore statusline from backup
@@ -115,8 +125,8 @@ elif [ -f "$STATUSLINE" ]; then
         echo -e "${GRAY}→${RESET} Removing statusline patch"
         # Create backup before modifying
         cp "$STATUSLINE" "$STATUSLINE.bak.uninstall"
-        # Remove the injected lines (everything from the comment to the script call)
-        sed -i '/# --- CC-ACM START ---/,/# --- CC-ACM END ---/d' "$STATUSLINE"
+        # Remove the injected lines
+        sed -i '/# --- Claudikins Automatic Context Manager START ---/,/# --- Claudikins Automatic Context Manager END ---/d' "$STATUSLINE"
         echo -e "${GREEN}✓${RESET} Statusline patch removed"
         echo -e "${GRAY}  Backup saved to: $STATUSLINE.bak.uninstall${RESET}"
     else
@@ -135,6 +145,22 @@ else
     echo -e "${GRAY}→${RESET} Config file not found"
 fi
 
+# Remove state directory
+if [ -d "$STATE_DIR" ]; then
+    echo -e "${GRAY}→${RESET} Removing state directory"
+    rm -rf "$STATE_DIR"
+    echo -e "${GREEN}✓${RESET} State directory removed"
+else
+    echo -e "${GRAY}→${RESET} State directory not found"
+fi
+
+# Also check for legacy cc-acm.conf
+if [ -f "$CLAUDE_DIR/cc-acm.conf" ]; then
+    echo -e "${GRAY}→${RESET} Removing legacy config file"
+    rm -f "$CLAUDE_DIR/cc-acm.conf"
+    echo -e "${GREEN}✓${RESET} Legacy config removed"
+fi
+
 # Clean up temp files
 echo -e "${GRAY}→${RESET} Cleaning up temporary files"
 rm -f /tmp/handoff-triggered-* 2>/dev/null || true
@@ -143,7 +169,7 @@ rm -f /tmp/claude-handoff.txt 2>/dev/null || true
 echo -e "${GREEN}✓${RESET} Temp files cleaned"
 
 echo ""
-echo -e "${GREEN}${BOLD}✓ CC-ACM uninstalled successfully!${RESET}"
+echo -e "${GREEN}${BOLD}✓ Claudikins Automatic Context Manager uninstalled successfully!${RESET}"
 echo ""
-echo -e "${GRAY}Thanks for using CC-ACM. To reinstall, run: ./install.sh${RESET}"
+echo -e "${GRAY}Thanks for using Claudikins Automatic Context Manager. To reinstall, run: ./install.sh${RESET}"
 echo ""

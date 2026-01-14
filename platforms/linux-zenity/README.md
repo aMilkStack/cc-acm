@@ -1,4 +1,4 @@
-# CC-ACM: Linux (Zenity) Version
+# Claudikins Automatic Context Manager: Linux (Zenity) Version
 
 > **EXPERIMENTAL** - Not fully tested. Contributions welcome!
 

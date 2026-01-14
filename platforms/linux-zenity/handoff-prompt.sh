@@ -1,5 +1,5 @@
 #!/bin/bash
-# CC-ACM: Linux version using Zenity for dialogs
+# Claudikins Automatic Context Manager: Linux version using Zenity for dialogs
 # EXPERIMENTAL - Not fully tested
 
 TRANSCRIPT_PATH="$1"
@@ -9,7 +9,7 @@ SNOOZE_FILE="/tmp/handoff-snooze-${SESSION_ID}"
 
 # Check for zenity
 if ! command -v zenity &> /dev/null; then
-    notify-send "CC-ACM" "Zenity required. Install with: sudo apt install zenity" 2>/dev/null
+    notify-send "Claudikins Automatic Context Manager" "Zenity required. Install with: sudo apt install zenity" 2>/dev/null
     exit 1
 fi
 

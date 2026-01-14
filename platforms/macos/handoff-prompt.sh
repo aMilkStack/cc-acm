@@ -1,5 +1,5 @@
 #!/bin/bash
-# CC-ACM: macOS version using osascript for dialogs
+# Claudikins Automatic Context Manager: macOS version using osascript for dialogs
 # EXPERIMENTAL - Not fully tested
 
 TRANSCRIPT_PATH="$1"

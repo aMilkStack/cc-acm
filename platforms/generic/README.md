@@ -1,4 +1,4 @@
-# CC-ACM: Generic Version
+# Claudikins Automatic Context Manager: Generic Version
 
 > **EXPERIMENTAL** - Works anywhere but requires manual new terminal.
 

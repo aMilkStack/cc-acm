@@ -1,6 +1,18 @@
-![CC-ACM Header](assets/header.png)
-
-# Claude Code Automatic Context Manager
+```
+ ██████╗██╗      █████╗ ██╗   ██╗██████╗ ██╗██╗  ██╗██╗███╗   ██╗███████╗
+██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██║██║ ██╔╝██║████╗  ██║██╔════╝
+██║     ██║     ███████║██║   ██║██║  ██║██║█████╔╝ ██║██╔██╗ ██║███████╗
+██║     ██║     ██╔══██║██║   ██║██║  ██║██║██╔═██╗ ██║██║╚██╗██║╚════██║
+╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝██║██║  ██╗██║██║ ╚████║███████║
+ ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝
+                     █████╗  ██████╗███╗   ███╗
+                    ██╔══██╗██╔════╝████╗ ████║
+                    ███████║██║     ██╔████╔██║
+                    ██╔══██║██║     ██║╚██╔╝██║
+                    ██║  ██║╚██████╗██║ ╚═╝ ██║
+                    ╚═╝  ╚═╝ ╚═════╝╚═╝     ╚═╝
+            ░▒▓ Automatic Context Manager ▓▒░
+```
 
 Automatic context handoff for Claude Code. When context usage hits 60%, a dialog prompts you to generate a summary and continue in a fresh session.
 
@@ -11,37 +23,31 @@ Automatic context handoff for Claude Code. When context usage hits 60%, a dialog
 1. Statusline monitors context usage
 2. At 60% (configurable), a dialog appears
 3. Click YES - generates a summary via `claude -p`
-4. Summary saved to `/acm:handoff` skill
+4. Summary saved to `.claude/claudikins-acm/handoff.md` (project-local)
 5. New Warp tab opens with `claude`
 6. SessionStart hook auto-loads the handoff
 
 ## Installation
 
+### As a Plugin (Recommended)
+
 ```bash
-./install.sh
+claude --plugin-dir /path/to/claudikins-acm
 ```
 
-**Manual step required**: Add the SessionStart hook to your `~/.claude/settings.json`:
+Or add to your project's `.claude/settings.json`:
 
 ```json
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/session-start-acm.sh"
-          }
-        ]
-      }
-    ]
-  }
+  "plugins": ["/path/to/claudikins-acm"]
 }
 ```
 
-If you already have hooks, merge this into the existing `hooks` object.
+### Manual Installation
+
+```bash
+./install.sh
+```
 
 ## How It Works
 
@@ -55,9 +61,8 @@ Statusline runs every 300ms
                     ├─ Dialog appears (retro ASCII style)
                     │
                     ├─ [YES] → claude -p generates summary
-                    │          → Writes to ~/.claude/skills/acm-handoff/SKILL.md
-                    │          → Opens new Warp tab (Ctrl+Shift+T)
-                    │          → Pastes "claude" + Enter
+                    │          → Writes to .claude/claudikins-acm/handoff.md
+                    │          → Opens new Warp tab
                     │          → SessionStart hook fires
                     │          → Claude auto-invokes /acm:handoff
                     │
@@ -66,25 +71,42 @@ Statusline runs every 300ms
                     └─ [DISMISS] → Won't ask again this session
 ```
 
-## File Structure
+## Plugin Structure
 
 ```
-~/.claude/
-├── scripts/
-│   └── handoff-prompt.sh      # Dialog + handoff generation
+claudikins-acm/
+├── .claude-plugin/
+│   └── plugin.json           # Plugin manifest
 ├── hooks/
-│   └── session-start-acm.sh   # Detects handoff, tells Claude to load it
+│   ├── hooks.json            # SessionStart hook config
+│   └── scripts/
+│       └── session-start.sh  # Detects handoff, tells Claude to load it
 ├── skills/
-│   ├── acm-config/SKILL.md    # /acm:config - interactive settings
-│   └── acm-handoff/SKILL.md   # /acm:handoff - handoff content (rewritten each time)
-├── settings.json              # Must contain SessionStart hook (see above)
-├── statusline-command.sh      # Includes CC-ACM trigger logic
-└── cc-acm.conf                # Config file (threshold, snooze, etc.)
+│   ├── acm-config/           # /acm:config - interactive settings
+│   └── acm-handoff/          # /acm:handoff - loads handoff content
+├── scripts/
+│   ├── handoff-prompt.sh     # Dialog + handoff generation
+│   └── statusline-command.sh # Statusline with trigger logic
+└── platforms/                # Platform-specific implementations
+```
+
+## Project-Local State
+
+Handoff state is stored per-project, so handoffs only load in the same project:
+
+```
+your-project/
+└── .claude/
+    └── claudikins-acm/
+        └── handoff.md        # Project-specific handoff content
+
+~/.claude/
+└── claudikins-acm.conf       # Global configuration
 ```
 
 ## Configuration
 
-Use `/acm:config` in Claude for interactive setup, or edit `~/.claude/cc-acm.conf`:
+Use `/acm:config` in Claude for interactive setup, or edit `~/.claude/claudikins-acm.conf`:
 
 ```bash
 THRESHOLD=60           # Context % to trigger (50-90)
@@ -94,17 +116,22 @@ SUMMARY_TOKENS=500     # Max tokens for summary (200-2000)
 
 ## Technical Details
 
-**Warp Launch**: Uses SendKeys - focuses Warp, Ctrl+Shift+T for new tab, clipboard paste "claude", Enter. AppActivate ensures correct window even if you click elsewhere.
+**Dialog**: PowerShell WinForms, borderless with ASCII `░▒▓` borders. Retro palette.
 
-**Hook**: Checks if `~/.claude/skills/acm-handoff/SKILL.md` exists and contains real content. If so, injects context telling Claude to immediately invoke `/acm:handoff`.
+**Warp Launch**: Uses SendKeys - focuses Warp, Ctrl+Shift+T for new tab, clipboard paste "claude", Enter.
+
+**Hook**: Checks if `.claude/claudikins-acm/handoff.md` exists in the current project. If so, injects context telling Claude to immediately invoke `/acm:handoff`.
 
 **Summary Generation**: Extracts recent conversation from transcript, includes git context if available, sends to `claude -p` for summarisation.
 
-## Platform
+## Platform Support
 
-WSL + Warp on Windows only. The dialog uses PowerShell WinForms, the tab launch uses Windows-specific SendKeys and AppActivate.
+Currently: WSL + Warp on Windows only.
 
-Other platforms (native Linux, macOS) would need different implementations for the dialog and terminal launch.
+The `platforms/` directory contains work-in-progress implementations for:
+- macOS (AppleScript dialogs)
+- Linux (Zenity dialogs)
+- Generic (terminal-based fallback)
 
 ## Uninstall
 
@@ -112,15 +139,6 @@ Other platforms (native Linux, macOS) would need different implementations for t
 ./uninstall.sh
 ```
 
-Removes scripts, hooks, skills, config, and temp files. Restores statusline from backup if available.
+## Part of the Claudikins Framework
 
-## Troubleshooting
-
-**Dialog doesn't appear**: Check PowerShell/WinForms availability in WSL.
-
-**New tab doesn't open**: Warp must be running. Check process name is `warp`.
-
-**Hook doesn't fire**: Verify hook is in `settings.json` (not a separate `hooks.json`), and matcher is `startup`.
-
-**Claude doesn't auto-load handoff**: Check `/acm:handoff` skill exists with real content (not "No Active Handoff").
-
+This is one component of the broader Claudikins ecosystem for Claude Code enhancement.

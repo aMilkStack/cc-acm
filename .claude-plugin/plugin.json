@@ -1,15 +1,11 @@
 {
-  "name": "cc-acm",
+  "name": "claudikins-automatic-context-manager",
   "version": "1.0.0",
-  "description": "Claude Code Automatic Context Manager - Interactive configuration and management skills",
-  "skills": [
-    {
-      "path": "skills/acm-config",
-      "enabled": true
-    },
-    {
-      "path": "skills/acm-handoff",
-      "enabled": true
-    }
-  ]
+  "description": "Claudikins Automatic Context Manager - seamless context handoff for Claude Code",
+  "author": {
+    "name": "Ethan Lee",
+    "url": "https://github.com/aMilkStack"
+  },
+  "repository": "https://github.com/aMilkStack/claudikins-acm",
+  "hooks": "./hooks/hooks.json"
 }

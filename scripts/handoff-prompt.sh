@@ -8,7 +8,7 @@ FLAG_FILE="/tmp/handoff-triggered-${SESSION_ID}"
 SNOOZE_FILE="/tmp/handoff-snooze-${SESSION_ID}"
 
 # Load configuration (if exists)
-CONFIG_FILE="$HOME/.claude/cc-acm.conf"
+CONFIG_FILE="$HOME/.claude/claudikins-acm.conf"
 if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
@@ -19,13 +19,13 @@ SNOOZE_DURATION="${SNOOZE_DURATION:-300}"
 SUMMARY_TOKENS="${SUMMARY_TOKENS:-500}"
 DIALOG_STYLE="${DIALOG_STYLE:-vibrant}"
 
-# Show retro ASCII styled dialog matching CC-ACM statusline aesthetic
+# Show retro ASCII styled dialog matching Claudikins Automatic Context Manager statusline aesthetic
 RESULT=$(powershell.exe -Command "
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
-# Retro palette (matching CC-ACM pixel art header)
+# Retro palette (matching Claudikins Automatic Context Manager pixel art header)
 \$darkBg = [System.Drawing.Color]::FromArgb(46, 44, 59)        # #2e2c3b
 \$darkGray = [System.Drawing.Color]::FromArgb(62, 65, 95)      # #3e415f
 \$medGray = [System.Drawing.Color]::FromArgb(85, 96, 125)      # #55607d
@@ -37,7 +37,7 @@ Add-Type -AssemblyName System.Drawing
 \$ice = [System.Drawing.Color]::FromArgb(193, 229, 234)        # #c1e5ea
 
 \$form = New-Object System.Windows.Forms.Form
-\$form.Text = 'CC-ACM'
+\$form.Text = 'Claudikins Automatic Context Manager'
 \$form.Size = New-Object System.Drawing.Size(460, 200)
 \$form.StartPosition = 'CenterScreen'
 \$form.FormBorderStyle = 'None'
@@ -147,7 +147,7 @@ Add-Type -AssemblyName System.Drawing
 
 # Check if dialog failed to open
 if [ -z "$RESULT" ]; then
-    echo "CC-ACM: Dialog failed to open. Check PowerShell/WinForms availability." >&2
+    echo "Claudikins Automatic Context Manager: Dialog failed to open. Check PowerShell/WinForms availability." >&2
     exit 1
 fi
 
@@ -191,7 +191,7 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 \$progressForm = New-Object System.Windows.Forms.Form
-\$progressForm.Text = 'CC-ACM'
+\$progressForm.Text = 'Claudikins Automatic Context Manager'
 \$progressForm.Size = New-Object System.Drawing.Size(400, 140)
 \$progressForm.StartPosition = 'CenterScreen'
 \$progressForm.FormBorderStyle = 'FixedDialog'
@@ -300,24 +300,19 @@ if [ -z "$HANDOFF" ]; then
     fi
     rm -f "$CLAUDE_STDERR"
 
-    powershell.exe -Command "[System.Windows.Forms.MessageBox]::Show('Failed to generate handoff.`n`n$ERROR_DETAIL', 'CC-ACM Error', 'OK', 'Error')" 2>/dev/null
+    powershell.exe -Command "[System.Windows.Forms.MessageBox]::Show('Failed to generate handoff.`n`n$ERROR_DETAIL', 'Claudikins Automatic Context Manager Error', 'OK', 'Error')" 2>/dev/null
     exit 1
 fi
 rm -f "$CLAUDE_STDERR"
 
-# Save handoff to skill file
-HANDOFF_SKILL="$HOME/.claude/skills/acm-handoff/SKILL.md"
-mkdir -p "$(dirname "$HANDOFF_SKILL")"
+# Save handoff to external state file (outside plugin)
+HANDOFF_STATE="$HOME/.claude/claudikins-acm/handoff.md"
+mkdir -p "$(dirname "$HANDOFF_STATE")"
 
-cat > "$HANDOFF_SKILL" << EOF
----
-name: acm-handoff
-description: Context handoff from a previous Claude Code session that reached $THRESHOLD% context usage. Use this to understand what was being worked on and continue seamlessly from where the previous session left off.
----
-
+cat > "$HANDOFF_STATE" << EOF
 # Context Handoff from Previous Session
 
-This session was started via CC-ACM (Claude Code Automatic Context Manager) after the previous session reached **$THRESHOLD% context usage**.
+This session was started via Claudikins Automatic Context Manager after the previous session reached **$THRESHOLD% context usage**.
 
 ## Previous Session Summary
 
@@ -332,8 +327,8 @@ $HANDOFF
 
 ---
 
-*Handoff generated automatically by CC-ACM v1.0*
-*To configure CC-ACM settings, use: /acm:config*
+*Handoff generated automatically by Claudikins Automatic Context Manager v1.0*
+*To configure Claudikins Automatic Context Manager settings, use: /acm:config*
 EOF
 
 # Open new Warp tab and launch Claude using SendKeys
@@ -363,6 +358,6 @@ Set-Clipboard -Value 'claude'
 [System.Windows.Forms.SendKeys]::SendWait('^v')  # Ctrl+V paste
 [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
 " 2>/dev/null || {
-    echo "CC-ACM: Handoff saved to ~/.claude/skills/acm-handoff/SKILL.md" >&2
-    echo "CC-ACM: Start a new Claude session and use /acm:handoff to continue" >&2
+    echo "Claudikins Automatic Context Manager: Handoff saved to ~/.claude/claudikins-acm/handoff.md" >&2
+    echo "Claudikins Automatic Context Manager: Start a new Claude session and use /acm:handoff to continue" >&2
 }

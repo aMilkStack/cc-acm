@@ -1,22 +1,37 @@
 ---
 name: acm-handoff
-description: Context handoff from a previous Claude Code session. Contains a summary of the previous conversation when context reached the configured threshold. Use this to understand what was being worked on and continue seamlessly.
+description: Context handoff from a previous Claude Code session. Reads the handoff summary when context reached the configured threshold. Use this to understand what was being worked on and continue seamlessly.
 ---
 
-# No Active Handoff
+# Context Handoff
 
-This skill will be populated automatically when CC-ACM performs a context handoff.
+This skill loads handoff content from a previous session that reached the context threshold.
 
-If you're seeing this, no handoff is currently active. The skill file gets written when:
-1. Your session reaches the configured context threshold (default 60%)
-2. You click "YES" in the handoff dialog
-3. A new session is opened with the handoff summary
+## Instructions
 
-To trigger a manual handoff, you can run the handoff script directly:
-```bash
-~/.claude/scripts/handoff-prompt.sh
+When this skill is invoked:
+
+1. **Read the handoff file** at `~/.claude/claudikins-acm/handoff.md`
+2. **Present the summary** to understand what was being worked on
+3. **Continue the work** from where it was left off
+
+## Handoff Location
+
+The handoff content is stored externally at:
+```
+~/.claude/claudikins-acm/handoff.md
 ```
 
+Read this file to get the previous session's context.
+
+## If No Handoff Exists
+
+If the file doesn't exist or is empty, inform the user:
+- No handoff is currently active
+- A handoff is created when context usage hits the threshold (default 60%)
+- They can trigger a manual handoff via the statusline
+
 ---
 
-*CC-ACM (Claude Code Automatic Context Manager)*
+*Claudikins Automatic Context Manager*
+*To configure settings, use: /acm:config*

@@ -3,7 +3,7 @@
 # Read JSON input from stdin
 input=$(cat)
 
-# CC-ACM retro Statusline
+# Claudikins Automatic Context Manager retro Statusline
 # Colors from the pixel art palette
 
 # True color (24-bit) - exact palette match
@@ -87,7 +87,7 @@ if [ -n "$has_tokens" ]; then
         bar_empty="$MED_GRAY"
         glow="$BOLD"
 
-        # --- CC-ACM START ---
+        # --- Claudikins Automatic Context Manager START ---
         session_id=$(echo "$input" | grep -o '"session_id":"[^"]*"' | sed 's/.*:"//;s/"//')
         transcript=$(echo "$input" | grep -o '"transcript_path":"[^"]*"' | sed 's/.*:"//;s/"//')
         flag_file="/tmp/handoff-triggered-${session_id}"
@@ -111,7 +111,7 @@ if [ -n "$has_tokens" ]; then
             touch "$flag_file"
             ~/.claude/scripts/handoff-prompt.sh "$transcript" "$session_id" &
         fi
-        # --- CC-ACM END ---
+        # --- Claudikins Automatic Context Manager END ---
     elif [ "$pct" -ge 40 ]; then
         ctx_color="$GOLD"
         bar_empty="$MED_GRAY"

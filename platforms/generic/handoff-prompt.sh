@@ -1,5 +1,5 @@
 #!/bin/bash
-# CC-ACM: Generic version - terminal agnostic
+# Claudikins Automatic Context Manager: Generic version - terminal agnostic
 # EXPERIMENTAL - Works anywhere but requires manual new terminal
 
 TRANSCRIPT_PATH="$1"
