@@ -101,6 +101,14 @@ Platform detection may have failed. Check `platforms/` for your terminal. Falls 
 **Handoff not loading in new session**
 Must be in the same project directory. Verify `.claude/claudikins-acm/handoff.md` exists and SessionStart hook is installed.
 
+## Roadmap
+
+- **Semantic triggers** - Detect degradation signals (repetition, errors, stuck loops) rather than relying solely on token thresholds
+- **Performance** - Replace regex JSON parsing with jq or Python single-pass extraction
+- **Incremental summaries** - Build context summaries progressively rather than only at handoff
+- **MCP integration** - Expose handoff status and manual trigger as MCP tools
+- **IDE extension** - VS Code integration for non-CLI users
+
 ## Uninstall
 
 `/plugin` → Installed → select plugin → Uninstall
