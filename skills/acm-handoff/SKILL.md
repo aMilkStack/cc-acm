@@ -11,27 +11,54 @@ This skill loads handoff content from a previous session that reached the contex
 
 When this skill is invoked:
 
-1. **Read the handoff file** at `.claude/claudikins-acm/handoff.md` (project-local)
-2. **Present the summary** to understand what was being worked on
-3. **Continue the work** from where it was left off
+1. **Check for structured state** at `.claude/claudikins-acm/handoff-state.json`
+2. **Read the handoff markdown** at `.claude/claudikins-acm/handoff.md`
+3. **Present both** to understand what was being worked on
+4. **Restore todos** if active todos exist in the state
+5. **Continue the work** from where it was left off
 
-## Handoff Location
+## File Locations
 
-The handoff content is stored per-project at:
+| File                                        | Purpose                      |
+| ------------------------------------------- | ---------------------------- |
+| `.claude/claudikins-acm/handoff-state.json` | Structured state (preferred) |
+| `.claude/claudikins-acm/handoff.md`         | Human-readable summary       |
+
+## Reading the State
+
+The structured state JSON contains:
+
+- `context.current_objective` - What was being worked on
+- `context.active_todos` - Pending/in-progress todos to restore
+- `context.key_files_modified` - Recently changed files
+- `git.branch` - Git branch at handoff time
+- `git.modified_files` - Uncommitted changes
+
+## After Reading
+
+1. **Restore todos** using TodoWrite if `active_todos` has entries
+2. **Summarise** the previous session's state for the user
+3. **Ask** if they want to continue from where they left off
+4. **Clean up** the handoff files after successful restoration
+
+## Cleanup
+
+After successfully restoring context, offer to clean up:
+
+```bash
+rm -f .claude/claudikins-acm/handoff-state.json
+rm -f .claude/claudikins-acm/handoff.md
 ```
-.claude/claudikins-acm/handoff.md
-```
-
-This is relative to the project root. Read this file to get the previous session's context.
 
 ## If No Handoff Exists
 
-If the file doesn't exist or is empty, inform the user:
+If neither file exists, inform the user:
+
 - No handoff is currently active
 - A handoff is created when context usage hits the threshold (default 60%)
-- They can trigger a manual handoff via the statusline
+- They can configure the threshold via /acm:config
 
 ---
 
-*Claudikins Automatic Context Manager*
-*To configure settings, use: /acm:config*
+_Claudikins Automatic Context Manager_
+_To configure settings, use: /acm:config_
