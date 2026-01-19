@@ -8,9 +8,16 @@ OUTPUT_FILE="$PROJECT_DIR/.claude/claudikins-acm/handoff-state.json"
 
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
-# Find transcript if not provided
+# Find transcript if not provided - scope to current project only
 if [ -z "$TRANSCRIPT" ]; then
-    TRANSCRIPT=$(find ~/.claude/projects -name "*.jsonl" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-)
+    # Derive transcript directory from project path
+    # Claude Code stores transcripts in ~/.claude/projects/-path-to-project/
+    PROJECT_DIR_NAME=$(echo "$PROJECT_DIR" | sed 's|^/|-|; s|/|-|g')
+    TRANSCRIPT_DIR="$HOME/.claude/projects/$PROJECT_DIR_NAME"
+
+    if [ -d "$TRANSCRIPT_DIR" ]; then
+        TRANSCRIPT=$(find "$TRANSCRIPT_DIR" -maxdepth 1 -name "*.jsonl" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-)
+    fi
 fi
 
 # Export for Python

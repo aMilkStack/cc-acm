@@ -9,8 +9,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$HOME/.claude/claudikins-acm.conf"
 [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
 
-# Find most recent transcript
-TRANSCRIPT=$(find ~/.claude/projects -name "*.jsonl" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-)
+# Derive transcript directory from current project path
+# Claude Code stores transcripts in ~/.claude/projects/-path-to-project/
+PROJECT_PATH=$(pwd)
+PROJECT_DIR_NAME=$(echo "$PROJECT_PATH" | sed 's|^/|-|; s|/|-|g')
+TRANSCRIPT_DIR="$HOME/.claude/projects/$PROJECT_DIR_NAME"
+
+# Find most recent transcript for THIS project only
+if [ -d "$TRANSCRIPT_DIR" ]; then
+    TRANSCRIPT=$(find "$TRANSCRIPT_DIR" -maxdepth 1 -name "*.jsonl" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-)
+else
+    TRANSCRIPT=""
+fi
 
 if [ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ]; then
     echo "ERROR: Could not find transcript file" >&2

@@ -1,6 +1,6 @@
 ![Claudikins ACM Banner](assets/banner.png)
 
-> 🚧 **v1.1.0 IN TESTING** - Native hooks implementation. May have rough edges. Report issues [here](https://github.com/elb-pr/claudikins-automatic-context-manager/issues).
+> **v1.1.1-beta** - Native hooks implementation. This is beta software - expect rough edges. Please [report bugs here](https://github.com/elb-pr/claudikins-automatic-context-manager/issues).
 
 **Automatic context management for Claude Code.** Monitors token usage and triggers at 60% context saturation, prompting for session handoff with an auto-generated summary that opens in a fresh session.
 
@@ -62,32 +62,32 @@ flowchart TD
 
 Run `/acm:config` for interactive setup, or edit `~/.claude/claudikins-acm.conf` directly.
 
-| Variable | Default | Range | Description |
-|----------|---------|-------|-------------|
-| `THRESHOLD` | 60 | 50-90 | Context percentage trigger |
-| `SNOOZE_DURATION` | 300 | 60-3600 | Snooze period in seconds |
-| `SUMMARY_TOKENS` | 500 | 200-2000 | Max tokens for handoff summary |
+| Variable          | Default | Range    | Description                    |
+| ----------------- | ------- | -------- | ------------------------------ |
+| `THRESHOLD`       | 60      | 50-90    | Context percentage trigger     |
+| `SNOOZE_DURATION` | 300     | 60-3600  | Snooze period in seconds       |
+| `SUMMARY_TOKENS`  | 500     | 200-2000 | Max tokens for handoff summary |
 
 ## Platform Support
 
 <details>
 <summary>Supported terminals and methods</summary>
 
-| Platform | Terminal | New Tab Method |
-|----------|----------|----------------|
+| Platform       | Terminal         | New Tab Method                            |
+| -------------- | ---------------- | ----------------------------------------- |
 | Windows native | Windows Terminal | `wt.exe new-tab` (Git Bash or PowerShell) |
-| Windows native | Git Bash | New window via `start git-bash` |
-| Windows native | PowerShell | New window via `Start-Process` |
-| WSL | Windows Terminal | `wt.exe new-tab wsl` |
-| WSL | Warp | SendKeys* |
-| macOS | iTerm2 | osascript |
-| macOS | Terminal.app | osascript (Cmd+T) |
-| macOS | Warp | osascript |
-| Linux | GNOME Terminal | `--tab` flag |
-| Linux | Konsole | `--new-tab` flag |
-| Linux | XFCE Terminal | `--tab` flag |
-| Linux | Kitty | `@ launch --type=tab` |
-| Fallback | Any | Clipboard + instructions |
+| Windows native | Git Bash         | New window via `start git-bash`           |
+| Windows native | PowerShell       | New window via `Start-Process`            |
+| WSL            | Windows Terminal | `wt.exe new-tab wsl`                      |
+| WSL            | Warp             | SendKeys\*                                |
+| macOS          | iTerm2           | osascript                                 |
+| macOS          | Terminal.app     | osascript (Cmd+T)                         |
+| macOS          | Warp             | osascript                                 |
+| Linux          | GNOME Terminal   | `--tab` flag                              |
+| Linux          | Konsole          | `--new-tab` flag                          |
+| Linux          | XFCE Terminal    | `--tab` flag                              |
+| Linux          | Kitty            | `@ launch --type=tab`                     |
+| Fallback       | Any              | Clipboard + instructions                  |
 
 **\*Warp on WSL**: Uses PowerShell SendKeys automation (focus window, Ctrl+Shift+T, paste, enter). Fragile but functional until Warp adds CLI tab support.
 
